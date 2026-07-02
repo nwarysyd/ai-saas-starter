@@ -1,9 +1,16 @@
-# 🚀 AI SaaS Starter — Open-Source Next.js AI SaaS Boilerplate (Free ShipFast / SaaSBoilerplate Alternative)
+# 🚀 AI SaaS Starter — Professional Next.js AI SaaS Platform
 
-> **The production-ready template powering 20+ open-source AI SaaS apps.** Ship a fully functional AI-powered SaaS with Google OAuth, Stripe credit billing, MuAPI AI engine, Prisma, and webhook-backed async generation — in minutes, not weeks. A free open-source alternative to ShipFast, SaaSBoilerplate, Gravity UI, and Bedrock — powered by the MuAPI AI engine.
+> **The production-ready, professionally upgraded AI SaaS template.** Build and deploy fully functional AI-powered SaaS with Google OAuth, PayPal payments, professional landing page, MuAPI AI engine, Prisma, and webhook-backed async generation — in minutes. Fully open-source and ready for production.
 
-**Tech stack:** Next.js 14 (App Router) · Prisma · PostgreSQL · NextAuth (Google OAuth) · Stripe · Tailwind CSS · MuAPI · Webhook-backed async delivery
+**Tech stack:** Next.js 16 (App Router) · Prisma · PostgreSQL · NextAuth (Google OAuth) · PayPal · Tailwind CSS v4 · MuAPI · Webhook-backed async delivery
 **Use cases:** AI image generators · AI video generators · AI audio tools · Virtual try-on apps · AI writing tools · AI photo editors · Any credit-based generative AI SaaS
+
+**Recent Updates:** 
+- ✨ Professional landing page with hero section and features showcase
+- 💳 PayPal integration (replaced Stripe)
+- 🎨 Enhanced UI/UX with modern design components
+- 📊 Professional pricing page with feature showcase
+- 🚀 Production-ready architecture
 
 ---
 
@@ -11,18 +18,20 @@
 * **Frontend**: Next.js 16 (App Router) + React 19 + Tailwind CSS v4 + React Icons
 * **Database**: Supabase Shared PostgreSQL pool + Prisma Client
 * **Auth**: NextAuth with Google OAuth Provider
-* **Billing**: Stripe Checkout (prebuilt webhook configuration for credit additions)
+* **Billing**: PayPal Checkout with secure webhook validation for credit additions
 * **Prediction Engine**: Universal async trigger, inline client polling, and webhook prediction completion sync
 
 ---
 
 ## 📁 Key Features
-* **Google Auth & Session Management**: Secure user registration, sign-in state checks, and session persistence.
-* **Credit Checkout System**: Dynamic checkout redirection, transaction safety metadata, and automated webhook credit topups.
-* **Prediction Webhook Webhooks**: Two-tiered delivery (inline polling for short tasks, and webhook handler for longer predictions).
-* **Local Webhook Bypass Pattern**: Automatically polls active generations on creations load (`/api/creations`) to heal state if webhooks fail in local development.
-* **Premium Theme (Dark Mode)**: Fully responsive dark-themed workspace with sliding aspect ratio presets, pulsing badges, and guest warning banners.
-* **CORS-Safe Downloads**: Server proxy `/api/download` to bypass cross-origin browser behaviors and download images immediately.
+* **Professional Landing Page**: Beautiful hero section with gradient effects, feature showcase, and clear call-to-action buttons
+* **Google Auth & Session Management**: Secure user registration, sign-in state checks, and session persistence
+* **PayPal Credit Checkout System**: Secure payment processing with webhook validation and automated credit topups
+* **Prediction Webhook System**: Two-tiered delivery (inline polling for short tasks, and webhook handler for longer predictions)
+* **Local Webhook Bypass Pattern**: Automatically polls active generations on creations load (`/api/creations`) to heal state if webhooks fail
+* **Premium Theme (Dark Mode)**: Fully responsive dark-themed workspace with modern design components
+* **Professional Pricing Page**: Beautiful pricing cards with feature showcase and clear pricing tiers
+* **CORS-Safe Downloads**: Server proxy `/api/download` to bypass cross-origin browser behaviors and download images immediately
 
 ---
 
@@ -48,9 +57,9 @@ Create a `.env` file in the root directory (based on `.env.example`):
 * `GOOGLE_CLIENT_SECRET`: OAuth Client Secret from Google Cloud Console.
 * `MUAPIAPP_API_KEY`: API Key to connect to the MUAPI services.
 * `WEBHOOK_URL`: Target webhook domain (usually maps to `NEXTAUTH_URL`).
-* `STRIPE_SECRET_KEY`: Private key from Stripe dashboard.
-* `STRIPE_WEBHOOK_SECRET`: Signature key to verify Stripe checkout events.
-* `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Public Stripe key.
+* `NEXT_PUBLIC_PAYPAL_CLIENT_ID`: PayPal sandbox/production client ID.
+* `PAYPAL_CLIENT_SECRET`: PayPal sandbox/production secret key.
+* `PAYPAL_WEBHOOK_ID`: PayPal webhook ID for payment confirmations.
 
 ---
 
@@ -60,19 +69,31 @@ Create a `.env` file in the root directory (based on `.env.example`):
    ```bash
    npm install
    ```
-2. Dynamic DB sync (Follow the Database Safety lifecycle above):
+2. Configure PayPal credentials:
+   - Copy `.env.example` to `.env.local`
+   - Add your PayPal Client ID, Secret, and Webhook ID
+   - See [UPGRADE_GUIDE.md](./UPGRADE_GUIDE.md) for detailed PayPal setup
+   
+3. Dynamic DB sync (Follow the Database Safety lifecycle above):
    ```bash
    npx prisma db pull
    npx prisma generate
    ```
-3. Run the development server:
+4. Run the development server:
    ```bash
    npm run dev
    ```
-4. Build for production:
+5. Build for production:
    ```bash
    npm run build
    ```
+
+---
+
+## 📖 Documentation
+
+- **[UPGRADE_GUIDE.md](./UPGRADE_GUIDE.md)** - Complete setup guide for PayPal integration and customization
+- **[CHANGES.md](./CHANGES.md)** - Detailed list of all upgrades and changes
 
 ---
 

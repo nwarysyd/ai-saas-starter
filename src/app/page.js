@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { FaRocket, FaCompass, FaRegFolderOpen, FaPlus, FaTrash, FaExternalLinkAlt, FaImage, FaMagic, FaArrowRight, FaDownload } from "react-icons/fa";
+import { FaRocket, FaCompass, FaRegFolderOpen, FaPlus, FaTrash, FaExternalLinkAlt, FaImage, FaMagic, FaArrowRight, FaDownload, FaStar, FaLightbulb, FaLock, FaCheckCircle, FaDollarSign } from "react-icons/fa";
 import { getAllTemplates } from "@/lib/registry";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
@@ -51,7 +51,139 @@ function CustomSelect({ value, onChange, options, placeholder = "Select option",
   );
 }
 
-export default function PlatformDashboard() {
+function LandingPage() {
+  return (
+    <div className="flex min-h-dvh flex-col bg-bg-page select-none text-primary-text">
+      <Navbar />
+
+      <main className="flex-1 w-full overflow-y-auto scrollbar-subtle">
+        {/* Hero Section */}
+        <section className="relative w-full py-20 lg:py-32 px-4 sm:px-6 lg:px-8 border-b border-divider/30">
+          <div className="max-w-6xl mx-auto space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full mb-4">
+              <FaStar className="text-primary text-sm" />
+              <span className="text-sm font-bold text-primary">Trusted by 10,000+ Creators Worldwide</span>
+            </div>
+
+            <div className="space-y-6">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-balance leading-tight">
+                Build Custom AI Apps<br className="hidden sm:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-pink-600">Without Code</span>
+              </h1>
+              
+              <p className="text-xl sm:text-2xl text-secondary-text max-w-2xl text-balance leading-relaxed font-medium">
+                Deploy professional AI SaaS applications in minutes. Create image generators, chatbots, video processing tools and more with our intuitive builder.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary-hover text-white text-lg font-bold rounded-full transition-all shadow-lg shadow-primary/30 active:scale-95"
+              >
+                <FaRocket size={20} />
+                Get Started Free
+              </Link>
+              <a
+                href="#features"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-bg-card border border-divider hover:bg-bg-card/80 text-primary-text text-lg font-bold rounded-full transition-all"
+              >
+                Learn More
+                <FaArrowRight size={18} />
+              </a>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4 pt-8 border-t border-divider/30">
+              {[
+                { label: "AI Models", value: "50+" },
+                { label: "Deployments", value: "10K+" },
+                { label: "Uptime", value: "99.9%" }
+              ].map((stat, idx) => (
+                <div key={idx} className="text-center">
+                  <div className="text-3xl font-black text-primary">{stat.value}</div>
+                  <div className="text-xs text-secondary-text font-semibold">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section id="features" className="w-full py-20 lg:py-32 px-4 sm:px-6 lg:px-8 border-b border-divider/30">
+          <div className="max-w-6xl mx-auto space-y-12">
+            <div className="text-center space-y-4">
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tight">Powerful Features</h2>
+              <p className="text-lg text-secondary-text max-w-2xl mx-auto">Everything you need to build, deploy, and monetize your AI applications</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  icon: FaMagic,
+                  title: "AI Template System",
+                  description: "Pre-built templates for images, video, audio and chat. Customize them your way."
+                },
+                {
+                  icon: FaLightbulb,
+                  title: "Lightning Fast Deployment",
+                  description: "Go from idea to live app in minutes. No infrastructure knowledge required."
+                },
+                {
+                  icon: FaLock,
+                  title: "Secure & Reliable",
+                  description: "Enterprise-grade security with 99.9% uptime SLA."
+                },
+                {
+                  icon: FaDollarSign,
+                  title: "Built-in Monetization",
+                  description: "Integrated credit system. Keep 100% of your profits."
+                },
+                {
+                  icon: FaCompass,
+                  title: "Advanced Analytics",
+                  description: "Track usage, revenue, and user engagement in real-time."
+                },
+                {
+                  icon: FaCheckCircle,
+                  title: "24/7 Support",
+                  description: "Dedicated support team ready to help you succeed."
+                }
+              ].map((feature, idx) => {
+                const Icon = feature.icon;
+                return (
+                  <div key={idx} className="bg-bg-card border border-divider/50 rounded-xl p-6 space-y-4 hover:border-primary/30 transition-all">
+                    <Icon className="text-3xl text-primary" />
+                    <h3 className="text-lg font-bold">{feature.title}</h3>
+                    <p className="text-sm text-secondary-text">{feature.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="w-full py-20 lg:py-32 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-600/20 border border-primary/30 rounded-2xl p-12 text-center space-y-6">
+            <h2 className="text-4xl sm:text-5xl font-black tracking-tight">Ready to Build?</h2>
+            <p className="text-xl text-secondary-text">Join thousands of creators building AI apps today. Start for free, upgrade as you grow.</p>
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary-hover text-white text-lg font-bold rounded-full transition-all shadow-lg shadow-primary/30 active:scale-95"
+            >
+              Start Creating Now
+              <FaArrowRight />
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
+
+function DashboardPage() {
   const { data: session, status } = useSession();
   const [appInstances, setAppInstances] = useState([]);
   const [creationsCount, setCreationsCount] = useState(0);
@@ -271,7 +403,7 @@ export default function PlatformDashboard() {
       <Toaster position="top-right" />
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-10 sm:px-6 lg:px-8 flex flex-col gap-10 overflow-y-auto scrollbar-subtle">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-10 sm:px-6 lg:px-8 flex flex-col gap-10 overflow-y-auto scrollbar-subtle" key="dashboard-main">
         
         {/* Welcome Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-divider/40 pb-6">
@@ -889,4 +1021,14 @@ export default function PlatformDashboard() {
       <Footer />
     </div>
   );
+}
+
+export default function HomePage() {
+  const { status } = useSession();
+  
+  if (status === "authenticated") {
+    return <DashboardPage />;
+  }
+  
+  return <LandingPage />;
 }

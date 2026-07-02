@@ -1,49 +1,36 @@
-import { stripe } from "../stripe";
 import config from "../config";
-import { UserService } from "./user";
+import PayPalService from "./paypal";
 
 export const BillingService = {
   async createCheckoutSession(userId, planId) {
-    const plan = config.stripe.plans[planId];
-    if (!plan) throw new Error("Invalid plan selected");
+    try {
+      // Use PayPal for checkout
+      const orderUrl = await PayPalService.createOrder(planId, userId);
+      return orderUrl;
+    } catch (error) {
+      console.error("Billing checkout error:", error);
+      throw error;
+    }
+  },
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: `${config.stripe.plans[planId].name}`,
-              description: `Purchase ${plan.credits} credits to perform AI generations.`,
-            },
-            unit_amount: plan.price,
-          },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${config.auth.url}/pricing?success=true`,
-      cancel_url: `${config.auth.url}/pricing?canceled=true`,
-      metadata: { userId, credits: plan.credits.toString() },
-    });
-
-    return session.url;
+  async capturePayment(orderId) {
+    try {
+      const result = await PayPalService.captureOrder(orderId);
+      return result;
+    } catch (error) {
+      console.error("Payment capture error:", error);
+      throw error;
+    }
   },
 
   async handleWebhook(body, signature) {
-    const event = stripe.webhooks.constructEvent(body, signature, config.stripe.webhookSecret);
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
-      const userId = session.metadata.userId;
-      const credits = parseInt(session.metadata.credits || "0", 10);
-
-      if (userId && credits > 0) {
-        await UserService.addCredits(userId, credits);
-        return { success: true, userId, credits };
-      }
+    try {
+      // Use PayPal webhook handler
+      return await PayPalService.handleWebhook(body);
+    } catch (error) {
+      console.error("Webhook handling error:", error);
+      throw error;
     }
-    return { success: false };
   }
 };
 

@@ -4,7 +4,9 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { FaCheck, FaInfoCircle } from "react-icons/fa";
+import PricingCard from "@/components/PricingCard";
+import FeaturesSection from "@/components/FeaturesSection";
+import { FaInfoCircle, FaArrowRight } from "react-icons/fa";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -21,7 +23,7 @@ export default function Pricing() {
 
   const handleCheckout = async (planId) => {
     if (status !== "authenticated") {
-      toast.error("You must sign in with Google to purchase credit packages.");
+      toast.error("You must sign in to purchase credit packages.");
       return;
     }
 
@@ -35,7 +37,7 @@ export default function Pricing() {
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.error || "Failed to trigger Stripe checkout session.");
+      toast.error(err.response?.data?.error || "Failed to initiate PayPal checkout.");
     } finally {
       setLoadingPlan(null);
     }
@@ -46,73 +48,60 @@ export default function Pricing() {
       <Toaster position="top-right" />
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-12 sm:px-6 lg:px-8 flex flex-col gap-10 overflow-y-auto scrollbar-subtle items-center">
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full mb-1">
-            <FaInfoCircle className="text-primary text-xs" />
-            <span className="text-[10px] font-black text-primary uppercase tracking-widest">Pricing Plans</span>
+      <main className="flex-1 w-full overflow-y-auto scrollbar-subtle">
+        {/* Pricing Section Header */}
+        <section className="w-full py-16 lg:py-24 px-4 sm:px-6 lg:px-8 border-b border-divider/30">
+          <div className="max-w-6xl mx-auto text-center space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full mb-2">
+              <FaInfoCircle className="text-primary text-xs" />
+              <span className="text-xs font-bold text-primary uppercase tracking-widest">Pricing Plans</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
+              Simple, Transparent Pricing
+            </h1>
+            <p className="text-lg text-secondary-text max-w-2xl mx-auto leading-relaxed">
+              Flexible credit packages for high-resolution AI generations. Pay once, use forever. Keep 100% of your profits.
+            </p>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight uppercase">Buy Credits Packs</h1>
-          <p className="text-xs sm:text-sm text-secondary-text max-w-lg leading-relaxed">
-            Purchase flexible credit packages to perform high-resolution predictions. Keep all profits — we handle AI infrastructure.
-          </p>
-        </div>
+        </section>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl">
-          {PLANS.map((plan) => (
-            <div
-              key={plan.id}
-              className={`relative bg-bg-card border rounded-lg p-6 flex flex-col justify-between gap-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${
-                plan.popular ? "border-primary shadow-xl shadow-primary/5 scale-105" : "border-divider/50 shadow-md"
-              }`}
-            >
-              {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-black uppercase px-3 py-1 rounded-full tracking-wider shadow">
-                  Most Popular
-                </span>
-              )}
-
-              <div className="space-y-4">
-                <div className="space-y-1">
-                  <h3 className="text-sm font-extrabold uppercase tracking-wide text-primary-text">{plan.name}</h3>
-                  <p className="text-2xl font-black tracking-tight text-white">{plan.price}</p>
-                </div>
-                
-                <div className="text-xs bg-bg-page/50 border border-divider/30 p-3 rounded text-center font-extrabold text-primary">
-                  {plan.credits} Art Credits
-                </div>
-
-                <p className="text-xs text-secondary-text leading-relaxed font-medium min-h-[3rem]">{plan.description}</p>
-                
-                <ul className="space-y-2 border-t border-divider/30 pt-4 text-xs font-semibold text-secondary-text">
-                  <li className="flex items-center gap-2">
-                    <FaCheck className="text-primary text-[10px]" />
-                    <span>Dynamic aspect ratios</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FaCheck className="text-primary text-[10px]" />
-                    <span>HD image downloads</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FaCheck className="text-primary text-[10px]" />
-                    <span>No subscription required</span>
-                  </li>
-                </ul>
-              </div>
-
-              <button
-                onClick={() => handleCheckout(plan.id)}
-                disabled={loadingPlan !== null}
-                className={`w-full py-3 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer select-none active:scale-[0.98] ${
-                  plan.popular ? "bg-primary text-white hover:bg-primary-hover shadow-primary/15" : "bg-bg-page hover:bg-bg-card text-primary-text border border-divider"
-                }`}
-              >
-                {loadingPlan === plan.id ? "Loading checkout..." : "Purchase Credits"}
-              </button>
+        <section className="w-full py-16 lg:py-24 px-4 sm:px-6 lg:px-8 border-b border-divider/30">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {PLANS.map((plan) => (
+                <PricingCard
+                  key={plan.id}
+                  plan={plan}
+                  isPopular={plan.popular}
+                  onPurchase={handleCheckout}
+                  isLoading={loadingPlan === plan.id}
+                />
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <FeaturesSection />
+
+        {/* CTA Section */}
+        <section className="w-full py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-600/20 border border-primary/30 rounded-2xl p-12 text-center space-y-6">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight">Ready to Get Started?</h2>
+            <p className="text-lg text-secondary-text">
+              Join thousands of creators building amazing AI apps. Start for free, upgrade as you grow.
+            </p>
+            <button
+              onClick={() => handleCheckout('pro')}
+              disabled={loadingPlan !== null}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary-hover text-white text-lg font-bold rounded-full transition-all shadow-lg shadow-primary/30 active:scale-95"
+            >
+              Start Free Trial
+              <FaArrowRight />
+            </button>
+          </div>
+        </section>
       </main>
 
       <Footer />

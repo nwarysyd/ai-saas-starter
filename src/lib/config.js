@@ -9,16 +9,21 @@ const config = {
     url: process.env.NEXTAUTH_URL || "http://localhost:3000",
     webhook_url: process.env.WEBHOOK_URL || process.env.NEXTAUTH_URL || "http://localhost:3000",
   },
+  paypal: {
+    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+    clientSecret: process.env.PAYPAL_CLIENT_SECRET,
+    webhookId: process.env.PAYPAL_WEBHOOK_ID,
+    plans: {
+      basic: { id: "basic", name: "Basic Pack", credits: 100, price: "5.00", description: "100 AI Credits Pack" },
+      standard: { id: "standard", name: "Standard Pack", credits: 250, price: "10.00", description: "250 AI Credits Pack" },
+      pro: { id: "pro", name: "Professional Pack", credits: 600, price: "20.00", description: "600 AI Credits Pack" },
+      business: { id: "business", name: "Business Pack", credits: 2000, price: "50.00", description: "2000 AI Credits Pack" },
+    }
+  },
   stripe: {
     publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     secretKey: process.env.STRIPE_SECRET_KEY,
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-    plans: {
-      basic: { id: "basic", name: "Basic Pack", credits: 100, price: 500 },
-      standard: { id: "standard", name: "Standard Pack", credits: 250, price: 1000 },
-      pro: { id: "pro", name: "Professional Pack", credits: 600, price: 2000 },
-      business: { id: "business", name: "Business Pack", credits: 2000, price: 5000 },
-    }
   },
   ai: {
     apiKey: process.env.MUAPIAPP_API_KEY,
