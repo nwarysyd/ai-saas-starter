@@ -35,16 +35,17 @@ model Session {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  name          String?
-  email         String?       @unique
-  emailVerified DateTime?
-  image         String?
-  credits       Int           @default(10)
-  accounts      Account[]
-  sessions      Session[]
-  creations     Creation[]
-  instances     AppInstance[]
+  id              String        @id @default(cuid())
+  name            String?
+  email           String?       @unique
+  emailVerified   DateTime?
+  image           String?
+  credits         Int           @default(10)
+  accounts        Account[]
+  sessions        Session[]
+  creations       Creation[]
+  instances       AppInstance[]
+  installedApps   InstalledApp[]
 }
 
 model AppInstance {
@@ -85,4 +86,62 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  icon        String?
+  color       String   @default("#6366f1")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  apps        App[]
+}
+
+model App {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  description   String   @db.Text
+  longDescription String? @db.Text
+  icon          String
+  banner        String?
+  author        String
+  version       String   @default("1.0.0")
+  rating        Float    @default(4.5)
+  downloads     Int      @default(0)
+  creditCost    Int      @default(1)
+  isPublic      Boolean  @default(true)
+  featured      Boolean  @default(false)
+  tags          String[] @default([])
+  
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+  
+  manifest      Json     // Full app manifest with parameters, UI config, etc.
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  installedApps InstalledApp[]
+}
+
+model InstalledApp {
+  id          String   @id @default(cuid())
+  name        String
+  appId       String
+  app         App      @relation(fields: [appId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  config      Json?    // User's custom configuration for this app
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([appId, userId])
 }

@@ -33,7 +33,8 @@ export default function Navbar() {
         { name: "Pricing", path: `/app/${currentAppId}/pricing` },
       ]
     : [
-        { name: "Workspace", path: "/" },
+        { name: "Workspace", path: "/dashboard" },
+        { name: "Store", path: "/store" },
         { name: "Gallery", path: "/gallery" },
         { name: "Pricing", path: "/pricing" },
       ];

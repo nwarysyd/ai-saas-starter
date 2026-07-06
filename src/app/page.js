@@ -67,12 +67,12 @@ function LandingPage() {
 
             <div className="space-y-6">
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-balance leading-tight">
-                Build Custom AI Apps<br className="hidden sm:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-pink-600">Without Code</span>
+                The Complete AI <br className="hidden sm:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-pink-600">Marketplace</span>
               </h1>
               
               <p className="text-xl sm:text-2xl text-secondary-text max-w-2xl text-balance leading-relaxed font-medium">
-                Deploy professional AI SaaS applications in minutes. Create image generators, chatbots, video processing tools and more with our intuitive builder.
+                Access 20+ premium AI tools for image generation, video creation, audio processing, and more. One subscription, unlimited creative possibilities.
               </p>
             </div>
 
@@ -81,16 +81,16 @@ function LandingPage() {
                 href="/login"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary-hover text-white text-lg font-bold rounded-full transition-all shadow-lg shadow-primary/30 active:scale-95"
               >
-                <FaRocket size={20} />
-                Get Started Free
+                <FaMagic size={20} />
+                Explore Apps
               </Link>
-              <a
-                href="#features"
+              <Link
+                href="/store"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-bg-card border border-divider hover:bg-bg-card/80 text-primary-text text-lg font-bold rounded-full transition-all"
               >
-                Learn More
+                Browse Store
                 <FaArrowRight size={18} />
-              </a>
+              </Link>
             </div>
 
             <div className="grid grid-cols-3 gap-4 pt-8 border-t border-divider/30">
@@ -112,41 +112,41 @@ function LandingPage() {
         <section id="features" className="w-full py-20 lg:py-32 px-4 sm:px-6 lg:px-8 border-b border-divider/30">
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center space-y-4">
-              <h2 className="text-4xl sm:text-5xl font-black tracking-tight">Powerful Features</h2>
-              <p className="text-lg text-secondary-text max-w-2xl mx-auto">Everything you need to build, deploy, and monetize your AI applications</p>
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tight">Why Choose AIForge</h2>
+              <p className="text-lg text-secondary-text max-w-2xl mx-auto">Everything you need to unleash your creativity with professional AI tools</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
                   icon: FaMagic,
-                  title: "AI Template System",
-                  description: "Pre-built templates for images, video, audio and chat. Customize them your way."
+                  title: "20+ Premium Apps",
+                  description: "From image generation to video creation. Browse, install, and use world-class AI tools."
                 },
                 {
                   icon: FaLightbulb,
-                  title: "Lightning Fast Deployment",
-                  description: "Go from idea to live app in minutes. No infrastructure knowledge required."
+                  title: "One-Click Installation",
+                  description: "Install any app instantly. No setup required. Start creating immediately."
                 },
                 {
                   icon: FaLock,
-                  title: "Secure & Reliable",
-                  description: "Enterprise-grade security with 99.9% uptime SLA."
+                  title: "Secure & Private",
+                  description: "Your data stays private. Enterprise-grade security and encryption."
                 },
                 {
                   icon: FaDollarSign,
-                  title: "Built-in Monetization",
-                  description: "Integrated credit system. Keep 100% of your profits."
+                  title: "Flexible Credits System",
+                  description: "Pay only for what you use. Affordable pricing, no hidden fees."
                 },
                 {
                   icon: FaCompass,
-                  title: "Advanced Analytics",
-                  description: "Track usage, revenue, and user engagement in real-time."
+                  title: "Curated Collections",
+                  description: "Discover collections by category, trending, or handpicked recommendations."
                 },
                 {
                   icon: FaCheckCircle,
-                  title: "24/7 Support",
-                  description: "Dedicated support team ready to help you succeed."
+                  title: "Live Support",
+                  description: "Get help when you need it. Fast, friendly, and always available."
                 }
               ].map((feature, idx) => {
                 const Icon = feature.icon;
@@ -162,17 +162,60 @@ function LandingPage() {
           </div>
         </section>
 
+        {/* App Showcase Section */}
+        <section className="w-full py-20 lg:py-32 px-4 sm:px-6 lg:px-8 border-b border-divider/30 bg-gradient-to-b from-transparent via-primary/5 to-transparent">
+          <div className="max-w-6xl mx-auto space-y-12">
+            <div className="text-center space-y-4">
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tight">Featured Apps</h2>
+              <p className="text-lg text-secondary-text">Handpicked premium AI tools for your creative workflow</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: 'Portrait Studio', category: 'Image', rating: '4.8' },
+                { title: 'Dreamscape', category: 'Landscape', rating: '4.7' },
+                { title: 'Product Showcase', category: 'E-commerce', rating: '4.6' },
+                { title: 'Anime Generator', category: 'Character', rating: '4.9' },
+              ].map((app, idx) => (
+                <div key={idx} className="bg-bg-card border border-divider/50 rounded-xl overflow-hidden hover:border-primary/30 transition-all group cursor-pointer">
+                  <div className="aspect-square bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">
+                    {['👤', '🏔️', '🛍️', '⛩️'][idx]}
+                  </div>
+                  <div className="p-4 space-y-2">
+                    <h3 className="font-bold text-primary-text">{app.title}</h3>
+                    <p className="text-xs text-secondary-text">{app.category}</p>
+                    <div className="flex items-center gap-1 text-xs">
+                      <span className="text-primary">★</span>
+                      <span className="text-primary-text">{app.rating}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center pt-4">
+              <Link
+                href="/store"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-full transition-all shadow-lg shadow-primary/30"
+              >
+                Explore All Apps
+                <FaArrowRight size={18} />
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="w-full py-20 lg:py-32 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-600/20 border border-primary/30 rounded-2xl p-12 text-center space-y-6">
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tight">Ready to Build?</h2>
-            <p className="text-xl text-secondary-text">Join thousands of creators building AI apps today. Start for free, upgrade as you grow.</p>
+            <h2 className="text-4xl sm:text-5xl font-black tracking-tight">Start Creating Today</h2>
+            <p className="text-xl text-secondary-text">Join thousands of creators. Sign up free and start using premium AI tools instantly.</p>
             <Link
               href="/login"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary-hover text-white text-lg font-bold rounded-full transition-all shadow-lg shadow-primary/30 active:scale-95"
             >
-              Start Creating Now
-              <FaArrowRight />
+              Get Started Free
+              <FaMagic />
             </Link>
           </div>
         </section>
