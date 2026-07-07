@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { IoClose, IoMenu } from "react-icons/io5";
-import { FiMoon, FiSun, FiLogOut, FiDollarSign, FiPlus, FiUser } from "react-icons/fi";
+import { FiMoon, FiSun, FiLogOut, FiDollarSign, FiPlus, FiUser, FiSettings } from "react-icons/fi";
 import { SiVercel } from "react-icons/si";
 import config from "@/lib/config";
 
@@ -128,6 +128,13 @@ export default function Navbar() {
                     <div className="px-3 py-2 text-xs text-secondary-text border-b border-divider/50 mb-1 truncate">
                       {session.user.email}
                     </div>
+                    <Link
+                      href="/admin"
+                      className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm font-semibold text-primary hover:bg-primary/10 transition-colors"
+                    >
+                      <FiSettings size={14} />
+                      <span>Admin Dashboard</span>
+                    </Link>
                     <button
                       onClick={() => signOut({ callbackUrl: "/login" })}
                       className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm font-semibold text-red-500 hover:bg-red-500/10 transition-colors"
