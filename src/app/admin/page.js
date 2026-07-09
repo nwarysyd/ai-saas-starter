@@ -5,39 +5,16 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { FaPlus, FaEdit, FaTrash, FaCheck, FaTimes, FaSearch, FaSave } from "react-icons/fa";
+import { FaPlus, FaRobot, FaVideo, FaMicrophone, FaMusic, FaTrash, FaExternalLinkAlt, FaChartBar, FaFire } from "react-icons/fa";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("apps");
   const [apps, setApps] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [editingApp, setEditingApp] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  
-  const [formData, setFormData] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    longDescription: "",
-    icon: "",
-    author: "AIForge",
-    version: "1.0.0",
-    categoryId: "",
-    creditCost: 1,
-    rating: 4.5,
-    downloads: 0,
-    isPublic: true,
-    featured: false,
-    tags: [],
-  });
 
-  // Check if user is admin
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
@@ -46,114 +23,57 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (status === "authenticated") {
-      fetchAppsAndCategories();
+      fetchApps();
     }
   }, [status]);
 
-  const fetchAppsAndCategories = async () => {
+  const fetchApps = async () => {
     try {
-      setLoading(true);
-      const [appsRes, categoriesRes] = await Promise.all([
-        axios.get("/api/apps?limit=100"),
-        axios.get("/api/categories"),
-      ]);
-      setApps(appsRes.data.data || []);
-      setCategories(categoriesRes.data.data || []);
+      const response = await axios.get("/api/apps");
+      setApps(response.data.data || []);
     } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("خطأ في تحميل البيانات");
+      console.error("Error fetching apps:", error);
+      toast.error("Failed to load apps");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddApp = async () => {
-    try {
-      if (!formData.name || !formData.slug || !formData.description || !formData.categoryId) {
-        toast.error("الرجاء ملء جميع الحقول المطلوبة");
-        return;
-      }
-
-      if (editingApp) {
-        await axios.put(`/api/apps/${editingApp.id}`, formData);
-        toast.success("تم تحديث التطبيق بنجاح");
-      } else {
-        await axios.post("/api/apps", formData);
-        toast.success("تم إضافة التطبيق بنجاح");
-      }
-
-      setShowForm(false);
-      resetForm();
-      fetchAppsAndCategories();
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("حدث خطأ في العملية");
+  const templates = [
+    {
+      id: 1,
+      name: "AI Image Studio",
+      description: "Launch a custom AI art and photo studio. Perfect for generating cyberpunk cityscapes, custom oil paintings, and...",
+      icon: FaRobot,
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      id: 2,
+      name: "AI Video Studio",
+      description: "Generate AI-powered videos from text prompts or source images. Create motion clips, animated scenes, and cinematic...",
+      icon: FaVideo,
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      id: 3,
+      name: "AI Companion Chatbot",
+      description: "Create customized companion personalities or expert support bots. Fits standard chat timelines and floating...",
+      icon: FaMicrophone,
+      color: "from-green-500 to-emerald-500"
+    },
+    {
+      id: 4,
+      name: "Audio Transcription Suite",
+      description: "Turn audio files, podcasts, and recordings into accurate written text, SRT captions, and meeting notes.",
+      icon: FaMusic,
+      color: "from-orange-500 to-red-500"
     }
-  };
-
-  const handleDeleteApp = async (appId) => {
-    if (confirm("هل أنت متأكد من حذف هذا التطبيق؟")) {
-      try {
-        await axios.delete(`/api/apps/${appId}`);
-        toast.success("تم حذف التطبيق بنجاح");
-        fetchAppsAndCategories();
-      } catch (error) {
-        console.error("Error:", error);
-        toast.error("خطأ في الحذف");
-      }
-    }
-  };
-
-  const handleEditApp = (app) => {
-    setEditingApp(app);
-    setFormData({
-      name: app.name,
-      slug: app.slug,
-      description: app.description,
-      longDescription: app.longDescription || "",
-      icon: app.icon || "",
-      author: app.author || "AIForge",
-      version: app.version || "1.0.0",
-      categoryId: app.categoryId || "",
-      creditCost: app.creditCost || 1,
-      rating: app.rating || 4.5,
-      downloads: app.downloads || 0,
-      isPublic: app.isPublic,
-      featured: app.featured,
-      tags: app.tags || [],
-    });
-    setShowForm(true);
-  };
-
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      slug: "",
-      description: "",
-      longDescription: "",
-      icon: "",
-      author: "AIForge",
-      version: "1.0.0",
-      categoryId: "",
-      creditCost: 1,
-      rating: 4.5,
-      downloads: 0,
-      isPublic: true,
-      featured: false,
-      tags: [],
-    });
-    setEditingApp(null);
-  };
-
-  const filteredApps = apps.filter(app =>
-    app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ];
 
   if (status === "loading" || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>جاري التحميل...</p>
+      <div className="flex min-h-dvh items-center justify-center bg-bg-page">
+        <div className="text-primary-text text-lg">Loading...</div>
       </div>
     );
   }
@@ -163,207 +83,123 @@ export default function AdminDashboard() {
       <Toaster position="top-right" />
       <Navbar />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-black mb-2">لوحة تحكم المسؤول</h1>
-          <p className="text-secondary-text">إدارة التطبيقات والفئات</p>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex gap-4 mb-8 border-b border-divider">
-          <button
-            onClick={() => setActiveTab("apps")}
-            className={`px-4 py-2 font-bold border-b-2 transition-all ${
-              activeTab === "apps" ? "border-primary text-primary" : "border-transparent text-secondary-text"
-            }`}
-          >
-            التطبيقات ({apps.length})
-          </button>
-        </div>
-
-        {/* Apps Tab */}
-        {activeTab === "apps" && (
-          <div>
-            <div className="flex gap-4 mb-6">
-              <div className="flex-1 relative">
-                <FaSearch className="absolute left-3 top-3 text-secondary-text" />
-                <input
-                  type="text"
-                  placeholder="البحث عن التطبيقات..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-bg-card border border-divider rounded-lg focus:outline-none focus:border-primary"
-                />
+      <main className="flex-1 w-full overflow-y-auto scrollbar-subtle">
+        {/* Header Section */}
+        <div className="border-b border-divider/30 px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h1 className="text-4xl sm:text-5xl font-black tracking-tight">APP BUILDER CONSOLE</h1>
+                <p className="text-secondary-text mt-2">Deploy custom template-driven AI SaaS apps dynamically.</p>
               </div>
               <button
-                onClick={() => {
-                  resetForm();
-                  setShowForm(true);
-                }}
-                className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg transition-all"
+                onClick={() => router.push("/store")}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-full transition-all shadow-lg shadow-primary/30 w-fit"
               >
-                <FaPlus size={18} />
-                إضافة تطبيق
+                <FaPlus size={16} />
+                Launch New App
               </button>
             </div>
+          </div>
+        </div>
 
-            {/* Add/Edit Form */}
-            {showForm && (
-              <div className="bg-bg-card border border-divider rounded-lg p-6 mb-8 space-y-4">
-                <h3 className="text-xl font-bold">{editingApp ? "تعديل التطبيق" : "إضافة تطبيق جديد"}</h3>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    placeholder="اسم التطبيق"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="px-4 py-2 bg-bg-page border border-divider rounded-lg focus:outline-none focus:border-primary"
-                  />
-                  <input
-                    type="text"
-                    placeholder="الـ Slug (بدون مسافات)"
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase() })}
-                    className="px-4 py-2 bg-bg-page border border-divider rounded-lg focus:outline-none focus:border-primary"
-                  />
-                </div>
-
-                <textarea
-                  placeholder="الوصف القصير"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-2 bg-bg-page border border-divider rounded-lg focus:outline-none focus:border-primary"
-                  rows="2"
-                />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    placeholder="رابط الأيقونة"
-                    value={formData.icon}
-                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                    className="px-4 py-2 bg-bg-page border border-divider rounded-lg focus:outline-none focus:border-primary"
-                  />
-                  <select
-                    value={formData.categoryId}
-                    onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                    className="px-4 py-2 bg-bg-page border border-divider rounded-lg focus:outline-none focus:border-primary"
-                  >
-                    <option value="">اختر فئة</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="number"
-                    placeholder="تكلفة الرصيد"
-                    min="1"
-                    value={formData.creditCost}
-                    onChange={(e) => setFormData({ ...formData, creditCost: parseInt(e.target.value) })}
-                    className="px-4 py-2 bg-bg-page border border-divider rounded-lg focus:outline-none focus:border-primary"
-                  />
-                  <input
-                    type="number"
-                    placeholder="التقييم"
-                    min="0"
-                    max="5"
-                    step="0.1"
-                    value={formData.rating}
-                    onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
-                    className="px-4 py-2 bg-bg-page border border-divider rounded-lg focus:outline-none focus:border-primary"
-                  />
-                </div>
-
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.isPublic}
-                      onChange={(e) => setFormData({ ...formData, isPublic: e.target.checked })}
-                      className="w-4 h-4"
-                    />
-                    <span>عام</span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.featured}
-                      onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                      className="w-4 h-4"
-                    />
-                    <span>مميز</span>
-                  </label>
-                </div>
-
-                <div className="flex gap-4 pt-4">
-                  <button
-                    onClick={handleAddApp}
-                    className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg transition-all"
-                  >
-                    <FaSave size={18} />
-                    حفظ
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowForm(false);
-                      resetForm();
-                    }}
-                    className="px-6 py-2 bg-bg-page border border-divider hover:bg-bg-card text-primary-text font-bold rounded-lg transition-all"
-                  >
-                    إلغاء
-                  </button>
-                </div>
+        {/* Stats Section */}
+        <div className="border-b border-divider/30 px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-bg-card border border-divider/50 rounded-lg p-6 space-y-2">
+                <div className="text-secondary-text text-sm font-bold uppercase tracking-wide">Deployed Apps</div>
+                <div className="text-4xl font-black text-primary">{apps.length}</div>
+                <div className="text-xs text-secondary-text">Custom active workspaces</div>
               </div>
-            )}
 
-            {/* Apps List */}
-            <div className="space-y-4">
-              {filteredApps.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-secondary-text">لا توجد تطبيقات</p>
-                </div>
-              ) : (
-                filteredApps.map((app) => (
-                  <div key={app.id} className="bg-bg-card border border-divider rounded-lg p-6 flex items-center gap-4 justify-between">
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="text-4xl">{app.icon}</div>
+              <div className="bg-bg-card border border-divider/50 rounded-lg p-6 space-y-2">
+                <div className="text-secondary-text text-sm font-bold uppercase tracking-wide">Total Generations</div>
+                <div className="text-4xl font-black text-primary">0</div>
+                <div className="text-xs text-secondary-text">Completed AI predictions</div>
+              </div>
+
+              <div className="bg-bg-card border border-divider/50 rounded-lg p-6 space-y-2">
+                <div className="text-secondary-text text-sm font-bold uppercase tracking-wide">Active Balance</div>
+                <div className="text-4xl font-black text-primary">${session?.user?.credits || 0}</div>
+                <div className="text-xs text-secondary-text">Available platform credits</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Deployed Apps Section */}
+        {apps.length > 0 && (
+          <div className="border-b border-divider/30 px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex items-center gap-2 mb-6">
+                <FaChartBar className="text-primary text-lg" />
+                <h2 className="text-xl font-bold uppercase tracking-wide">My Deployed App Workspaces</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {apps.slice(0, 4).map((app) => (
+                  <div key={app.id} className="bg-bg-card border border-divider/50 rounded-lg p-6 space-y-4 hover:border-primary/30 transition-all">
+                    <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="font-bold text-lg">{app.name}</h3>
-                        <p className="text-sm text-secondary-text">{app.description}</p>
-                        <div className="flex gap-4 mt-2 text-xs">
-                          <span>★ {app.rating}</span>
-                          <span>تحميلات: {app.downloads}</span>
-                          <span>رصيد: {app.creditCost}</span>
-                          {app.featured && <span className="bg-primary/20 text-primary px-2 py-1 rounded">مميز</span>}
-                        </div>
+                        <div className="text-xs text-primary font-bold uppercase tracking-wide mb-1">{app.category?.name || "UNCATEGORIZED"}</div>
+                        <h3 className="text-lg font-bold text-primary-text">{app.name}</h3>
+                        <p className="text-xs text-secondary-text mt-1">{app.description}</p>
                       </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleEditApp(app)}
-                        className="p-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg transition-all"
-                      >
-                        <FaEdit size={18} />
+                      <button className="p-2 hover:bg-red-500/10 rounded-lg transition-colors text-red-500">
+                        <FaTrash size={14} />
                       </button>
-                      <button
-                        onClick={() => handleDeleteApp(app.id)}
-                        className="p-2 bg-red-500/20 hover:bg-red-500/30 text-red-500 rounded-lg transition-all"
-                      >
-                        <FaTrash size={18} />
+                    </div>
+
+                    <div className="flex gap-3 pt-4 border-t border-divider/30">
+                      <button className="flex-1 py-2 bg-bg-page hover:bg-bg-page/80 text-primary-text font-semibold rounded-lg transition-colors text-sm">
+                        Workspace
+                      </button>
+                      <button className="flex-1 py-2 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg transition-colors text-sm">
+                        Gallery
                       </button>
                     </div>
                   </div>
-                ))
-              )}
+                ))}
+              </div>
             </div>
           </div>
         )}
+
+        {/* Available Templates Section */}
+        <div className="px-4 sm:px-6 lg:px-8 py-12">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-2 mb-8">
+              <FaFire className="text-primary text-lg" />
+              <h2 className="text-xl font-bold uppercase tracking-wide">Available Base Templates</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {templates.map((template) => {
+                const Icon = template.icon;
+                return (
+                  <div key={template.id} className="bg-bg-card border border-divider/50 rounded-lg overflow-hidden hover:border-primary/30 transition-all group">
+                    <div className={`h-24 bg-gradient-to-br ${template.color} opacity-20 flex items-center justify-center`}>
+                      <Icon size={40} className="text-primary/50" />
+                    </div>
+
+                    <div className="p-6 space-y-4">
+                      <div>
+                        <h3 className="font-bold text-primary-text mb-2">{template.name}</h3>
+                        <p className="text-xs text-secondary-text leading-relaxed">{template.description}</p>
+                      </div>
+
+                      <button className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primary-hover transition-colors">
+                        Launch with template
+                        <FaExternalLinkAlt size={12} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </main>
 
       <Footer />

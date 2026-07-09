@@ -22,22 +22,30 @@ export default function Footer() {
           {/* Top Section */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              &copy; {currentYear} AIForge. جميع الحقوق محفوظة.
+              &copy; {currentYear} AIForge. All rights reserved.
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-wrap justify-center">
               <Link href="/terms" className="hover:text-primary-text transition-colors">
-                شروط الاستخدام
+                Terms of Use
               </Link>
               <span className="opacity-30">•</span>
               <Link href="/privacy" className="hover:text-primary-text transition-colors">
-                سياسة الخصوصية
+                Privacy Policy
+              </Link>
+              <span className="opacity-30">•</span>
+              <Link href="/contact" className="hover:text-primary-text transition-colors">
+                Contact Us
+              </Link>
+              <span className="opacity-30">•</span>
+              <Link href="/refund-policy" className="hover:text-primary-text transition-colors">
+                Refund Policy
               </Link>
             </div>
           </div>
 
           {/* Social Links */}
           <div className="flex items-center justify-center gap-4 py-4 border-t border-divider/20">
-            <span className="text-xs">تابعنا على:</span>
+            <span className="text-xs">Follow us:</span>
             <div className="flex gap-4">
               {socialLinks.map((social) => {
                 const Icon = social.icon;

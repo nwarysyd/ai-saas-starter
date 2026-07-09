@@ -1,5 +1,5 @@
 const config = {
-  appName: "AI SaaS",
+  appName: "AI Forge",
   auth: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,
